@@ -65,7 +65,7 @@ TERMBIN --hide-scrollbar --hide-menubar --color-bg=#222222 --zoom=-1 $@\n' > /ho
             fc-cache -fv > /dev/null
 
             # Wallpaper
-            if [ "$1" = "debian" ] || [ "$1" = "archarm" ] || [ "$1" = "archlinux" ] || [ "$1" = "kali" ]; then
+            if [ "$1" = "debian" ] || [ "$1" = "archarm" ] || [ "$1" = "archlinux" ] || [ "$1" = "kali" ] || [ "$1" = "fedora" ]; then
                 sed -i "s/PLACEHOLDER/$1/g" /home/$USER_NAME/.config/i3/config
             else
                 sed -i "s/PLACEHOLDER-1/mountains/g" /home/$USER_NAME/.config/i3/config
@@ -91,10 +91,10 @@ TERMBIN --hide-scrollbar --hide-menubar --color-bg=#222222 --zoom=-1 $@\n' > /ho
             # Xfce4 settings
             rsync -a --mkpath /mnt/guest/configs/config/xfce4/xfconf/xfce-perchannel-xml/ /home/$USER_NAME/.config/xfce4/xfconf/xfce-perchannel-xml/
 
-            # Wallpaper
-            if [ "$1" = "debian" ] || [ "$1" = "archarm" ] || [ "$1" = "archlinux" ] || [ "$1" = "kali" ]; then
+# Wallpaper
+            if [ "$1" = "debian" ] || [ "$1" = "archarm" ] || [ "$1" = "archlinux" ] || [ "$1" = "kali" ] || [ "$1" = "fedora" ]; then
                 sed -i "s/\/usr\/share\/backgrounds\/xfce\/xfce-verticals.png/\/home\/$USER_NAME\/Pictures\/Wallpapers\/$1-2.jpg/g" \
-                	/home/$USER_NAME/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
+                \t/home/$USER_NAME/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
             fi
 	    chown -R $USER_NAME:$USER_NAME /home/$USER_NAME/.config
 

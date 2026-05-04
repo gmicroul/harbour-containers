@@ -33,6 +33,10 @@ case $DISTRO in
          "archarm" | "archlinux")
 	        DISTRO_VER=arch
     	;;
+
+         "fedora" | "rhel" | "centos")
+	        DISTRO_VER=fedora
+    	;;
 esac
 
 # Run distro setup script

@@ -12,6 +12,12 @@ DISPLAY_ID=$1
 USER_UID=$2
 SCREEN_ORIENTATION=$3
 
+# Ensure /run/display directory exists and is writable
+if [ ! -d "/run/display" ]; then
+    mkdir -p /run/display 2>/dev/null
+    chown $USER_UID:privileged /run/display 2>/dev/null
+fi
+
 export EGL_PLATFORM="wayland"
 export QT_QPA_PLATFORM="wayland"
 export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
