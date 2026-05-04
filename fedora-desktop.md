@@ -46,7 +46,7 @@
 | libbsd | libbsd | libbsd（运行时） + libbsd-devel |
 
 ### 已移除的包（Fedora 仓库无匹配）
-- `onboard` — 需要 EPEL，但 Fedora 42 EPEL 尚未发布
+- ~~onboard~~ → 改用 `florence`（可直接 dnf 安装，比 onboard 更好用）
 - `xorg-x11-server-utils` — Fedora 42 无此包
 - `mousetweaks` — Fedora 仓库无此包（脚本会静默跳过）
 
