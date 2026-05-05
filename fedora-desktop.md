@@ -46,14 +46,21 @@
 | libbsd | libbsd | libbsd（运行时） + libbsd-devel |
 
 ### 已移除的包（Fedora 仓库无匹配）
-- ~~onboard~~ / ~~florence~~ — 虚拟键盘影响 WiFi 连接，暂不安装
+- ~~onboard~~ / ~~florence~~ — 虚拟键盘会牵出 GNOME 网络栈依赖（wpa_supplicant、NetworkManager-wifi 等），容器内安装后与宿主 SFOS WiFi 管理冲突，导致 WiFi 断连且密码失效。暂不安装任何虚拟键盘。
 - `xorg-x11-server-utils` — Fedora 42 无此包
 - `mousetweaks` — Fedora 仓库无此包（脚本会静默跳过）
 
 ### DNS 问题
-Fedora 使用 systemd-resolved，`/etc/resolv.conf` 被接管。
-解决方法（手动）：
+Fedora 使用 systemd-resolved，容器内 systemd-resolved 的 DNS stub listener（127.0.0.53:53）与 SFOS 宿主端口冲突。安装包触发 resolved 重启时会导致 WiFi DNS 解析异常。
+
+解决方法（容器内 root 执行，一次性）：
 ```bash
+cat > /etc/systemd/resolved.conf << 'EOF'
+[Resolve]
+DNS=8.8.8.8
+DNSStubListener=no
+EOF
+systemctl restart systemd-resolved
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
 ```
 
@@ -92,7 +99,7 @@ Ctrl+C 关掉 Terminal 1（qxcompositor 停止），桌面自动退出。
 ## 未完成事项
 
 - [ ] 修复 GUI 一键启动（harbour-containers daemon 调用 `new_display.sh` 的环境变量问题）
-- [ ] onboard 支持（等 Fedora 42 EPEL 发布后添加）
+- [ ] 寻找不引入 GNOME 网络栈依赖的虚拟键盘方案
 - [ ] 真实的 Fedora 壁纸和容器图标
 - [ ] xfce4 横竖屏自适应
 
@@ -112,8 +119,14 @@ Ctrl+C 关掉 Terminal 1（qxcompositor 停止），桌面自动退出。
    ```bash
    devel-su lxc-attach -n <容器名>
    ```
-4. 修 DNS：
+4. 修 DNS 并禁用 systemd-resolved stub 防止 WiFi 冲突：
    ```bash
+   cat > /etc/systemd/resolved.conf << 'EOF'
+   [Resolve]
+   DNS=8.8.8.8
+   DNSStubListener=no
+   EOF
+   systemctl restart systemd-resolved
    echo "nameserver 8.8.8.8" > /etc/resolv.conf
    ```
 5. 在容器内执行安装脚本：
