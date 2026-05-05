@@ -54,7 +54,6 @@ install_packages() {
 				dmenu \
 				dunst \
 				firefox \
-				florence \
 				fzf \
 				hsetroot \
 				i3 \
@@ -92,7 +91,6 @@ install_packages() {
 				dmenu \
 				exo \
 				firefox \
-				florence \
 				garcon \
 				mpv \
 				pavucontrol \
