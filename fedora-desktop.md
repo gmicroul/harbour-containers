@@ -46,7 +46,7 @@
 | libbsd | libbsd | libbsd（运行时） + libbsd-devel |
 
 ### 已移除的包（Fedora 仓库无匹配）
-- ~~onboard~~ / ~~florence~~ — 虚拟键盘会牵出 GNOME 网络栈依赖（wpa_supplicant、NetworkManager-wifi 等），容器内安装后与宿主 SFOS WiFi 管理冲突，导致 WiFi 断连且密码失效。暂不安装任何虚拟键盘。
+- ~~onboard~~ — Fedora 官方仓库没有，需要从源码编译安装（见下方"虚拟键盘"章节）。不建议安装 florence，会牵出 GNOME 网络栈依赖导致 WiFi 冲突。
 - `xorg-x11-server-utils` — Fedora 42 无此包
 - `mousetweaks` — Fedora 仓库无此包（脚本会静默跳过）
 
@@ -70,6 +70,38 @@ echo "nameserver 8.8.8.8" > /etc/resolv.conf
 ### Xwayland
 - 不使用 Fedora 自带的 Xwayland（不支持 qxcompositor 的 XDG-WM-Base 协议）
 - 下载 sailfish-containers 预编译的 **libc-2.27** 版本（libc-2.29 在 Fedora 42 上兼容性不佳）
+
+## 虚拟键盘（Onboard）
+
+Fedora 官方仓库没有 onboard 包，需要从源码编译安装。
+
+### 安装依赖
+```bash
+sudo dnf install python3-distutils-extra dconf-devel intltool
+sudo dnf install libcanberra-devel libxkbfile-devel libXtst-devel
+sudo dnf install hunspell-devel python3-devel intltool gcc-c++ gcc
+sudo dnf install 'pkgconfig(udev)' 'pkgconfig(libudev)'
+```
+
+### 编译安装
+```bash
+git clone https://github.com/onboard-osk/onboard
+cd onboard
+sudo pip install setuptools
+pip install setuptools
+python3 setup.py clean
+python3 setup.py build
+sudo python3 setup.py install
+```
+
+### 卸载
+```bash
+sudo python3 setup.py uninstall
+```
+
+### 注意
+- Florence 虚拟键盘不要安装，它依赖 GNOME 网络栈（wpa_supplicant、NetworkManager-wifi 等），容器内安装后会与宿主 SFOS WiFi 管理冲突，导致 WiFi 断连且密码失效。
+- Onboard 是纯 Python 实现，不会引入 GNOME 网络依赖，是 Fedora 容器里安全的虚拟键盘选择。
 
 ## 启动桌面（当前方案）
 
@@ -99,7 +131,7 @@ Ctrl+C 关掉 Terminal 1（qxcompositor 停止），桌面自动退出。
 ## 未完成事项
 
 - [ ] 修复 GUI 一键启动（harbour-containers daemon 调用 `new_display.sh` 的环境变量问题）
-- [ ] 寻找不引入 GNOME 网络栈依赖的虚拟键盘方案
+- [x] onboard 支持（从源码编译安装，见"虚拟键盘"章节）
 - [ ] 真实的 Fedora 壁纸和容器图标
 - [ ] xfce4 横竖屏自适应
 
