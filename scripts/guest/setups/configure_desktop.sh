@@ -13,7 +13,7 @@ export "PATH=/home/%s/.local/bin:$PATH"
 export MOZ_USE_XINPUT2=1
 xrdb ~/.Xresources
 ' "$USER_NAME" >> /home/$USER_NAME/.xinitrc
-    printf '%s' "$LAUNCHCMD" >> /home/$USER_NAME/.xinitrc
+    printf '%s\n' "$LAUNCHCMD" >> /home/$USER_NAME/.xinitrc
 
     # Keep polkit from bothering users at each boot
     mkdir -p /etc/polkit-1/localauthority/50-local.d

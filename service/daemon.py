@@ -8,6 +8,7 @@ from libs import lxc, qxcompositor
 
 import dbus
 import dbus.service
+import os
 import pathlib
 
 DBUS_IFACE="org.sailfishcontainers.daemon"
@@ -350,6 +351,14 @@ class ContainersService(dbus.service.Object):
             if self.containers[name]["container_status"] == "RUNNING":
                 # create a new qxcompositor display
                 display = self._create_display(screen_orientation)
+
+                # Wait for qxcompositor socket to be ready (up to 10 seconds)
+                socket_path = "/run/display/wayland-container-%s" % display
+                import time
+                for i in range(20):
+                    if os.path.exists(socket_path):
+                        break
+                    time.sleep(0.5)
 
                 # start Xwayland on the new display
                 desktop = lxc.start_desktop(name, display)

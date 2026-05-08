@@ -64,15 +64,10 @@ export QT_FONT_DPI=2000
 # start dbus session
 #export $(dbus-launch)
 #sleep 2
-su $USER_NAME -c startx
 
-#
-## Xwayland -> Xephyr/Xnest -> lightdm testing
-# set display to xwayland and start Xephyr on :1
-#export DISPLAY=:0
-#Xephyr -fullscreen -nolisten tcp -ac -2button -host-cursor :1 &
-#sleep 3
-
-# set display to Xephyr and start display manager
-#export DISPLAY=:1 (not required)
-#/bin/systemctl restart lightdm
+# Detect distribution for Fedora-specific workaround
+if [ -f /etc/fedora-release ] || grep -qi "fedora" /etc/os-release 2>/dev/null; then
+    su - $USER_NAME -c "export XDG_RUNTIME_DIR=/run/user/$USER_UID && export WAYLAND_DISPLAY=../../display/wayland-container-$1 && xinit /home/$USER_NAME/.xinitrc -- /opt/bin/Xwayland :0 -nolisten tcp -auth /dev/null"
+else
+    su $USER_NAME -c startx
+fi
